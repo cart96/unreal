@@ -5,20 +5,35 @@ defmodule Unreal do
   @type connection :: GenServer.server()
   @type result :: Core.Result.t() | list(Core.Result.t()) | Core.Error.t()
 
-  @spec start_link({:http, Core.Conn.t()}) :: :ignore | {:error, any} | {:ok, pid}
+  @spec start_link({:http | :ws, Core.Conn.t()}) :: :ignore | {:error, any} | {:ok, pid}
   def start_link({:http, conn}) do
     GenServer.start_link(Protocols.HTTP, conn)
   end
 
+  def start_link({:ws, conn}) do
+    GenServer.start_link(Protocols.WebSocket, conn)
+  end
+
   @spec use(connection, String.t(), String.t()) :: :ok
   def use(pid, namespace, database) do
-    old = GenServer.call(pid, :conn)
-    GenServer.cast(pid, {:conn, %{old | namespace: namespace, database: database}})
+    GenServer.cast(pid, {:use, namespace, database})
+  end
+
+  @spec signin(connection, String.t(), String.t(), String.t() | nil) :: :ok
+  def signin(pid, username, password, scope \\ nil) do
+    data =
+      if is_nil(scope) do
+        %{user: username, pass: password}
+      else
+        %{user: username, pass: password, sc: scope}
+      end
+
+    GenServer.cast(pid, {:signin, data})
   end
 
   @spec query(connection, String.t()) :: result
   def query(pid, command) do
-    GenServer.call(pid, {:query, command})
+    GenServer.call(pid, {:query, command, %{}})
     |> get_first()
   end
 

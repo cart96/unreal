@@ -12,7 +12,7 @@ defmodule Unreal.Core.Error do
     case Jason.decode(raw) do
       {:ok, result} ->
         %__MODULE__{
-          code: result["code"] || 400,
+          code: result["code"] || 0,
           message: result["information"] || result["description"] || result["details"] || ""
         }
 
