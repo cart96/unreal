@@ -1,4 +1,6 @@
 defmodule Unreal.Core.Result do
+  alias Unreal.Core
+
   @enforce_keys [:time, :status, :result]
   defstruct [:time, :status, :result]
 
@@ -8,15 +10,24 @@ defmodule Unreal.Core.Result do
           result: map | list
         }
 
-  @spec build(binary) :: list(t) | {:error, :invalid_json}
+  @spec build(binary) :: list(t) | Core.Error.t()
   def build(raw) do
     case Jason.decode(raw) do
       {:ok, list} ->
         list
-        |> Enum.map(&%__MODULE__{time: &1["time"], status: &1["status"], result: &1["result"]})
+        |> Enum.map(
+          &%__MODULE__{
+            time: &1["time"] || "",
+            status: &1["status"] || "OK",
+            result: &1["result"] || []
+          }
+        )
 
       {:error, _} ->
-        {:error, :invalid_json}
+        %Core.Error{
+          code: 0,
+          message: "Parsing error."
+        }
     end
   end
 end

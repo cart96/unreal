@@ -1,7 +1,7 @@
 defmodule Unreal.Core.Request do
   alias Unreal.Core
 
-  @enforce_keys [:method, :url, :headers, :command]
+  @enforce_keys [:method, :url, :headers]
   defstruct [:method, :url, :headers, :command]
 
   @type t :: %__MODULE__{
@@ -11,7 +11,7 @@ defmodule Unreal.Core.Request do
           command: String.t() | nil
         }
 
-  @spec build(atom, Core.Conn.t(), binary, binary | nil) :: Unreal.Core.Request.t()
+  @spec build(atom, Core.Conn.t(), binary, binary | nil) :: t()
   def build(
         method,
         %Core.Conn{

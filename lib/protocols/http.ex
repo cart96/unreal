@@ -18,9 +18,9 @@ defmodule Unreal.Protocols.HTTP do
   end
 
   @impl true
-  def handle_call({:get_table, table}, _from, conn) do
+  def handle_call({:query, command, _vars}, _from, conn) do
     result =
-      Core.Request.build(:get, conn, "/key/#{table}", nil)
+      Core.Request.build(:post, conn, "/sql", command)
       |> Core.HTTP.request()
 
     {:reply, result, conn}
@@ -36,6 +36,15 @@ defmodule Unreal.Protocols.HTTP do
   end
 
   @impl true
+  def handle_call({:get_table, table}, _from, conn) do
+    result =
+      Core.Request.build(:get, conn, "/key/#{table}", nil)
+      |> Core.HTTP.request()
+
+    {:reply, result, conn}
+  end
+
+  @impl true
   def handle_call({:delete_table, table}, _from, conn) do
     result =
       Core.Request.build(:delete, conn, "/key/#{table}", nil)
@@ -45,18 +54,18 @@ defmodule Unreal.Protocols.HTTP do
   end
 
   @impl true
-  def handle_call({:get_object, table, id}, _from, conn) do
+  def handle_call({:insert_object, table, id, data}, _from, conn) do
     result =
-      Core.Request.build(:get, conn, "/key/#{table}/#{id}", nil)
+      Core.Request.build(:post, conn, "/key/#{table}/#{id}", Jason.encode!(data))
       |> Core.HTTP.request()
 
     {:reply, result, conn}
   end
 
   @impl true
-  def handle_call({:insert_object, table, id, data}, _from, conn) do
+  def handle_call({:get_object, table, id}, _from, conn) do
     result =
-      Core.Request.build(:post, conn, "/key/#{table}/#{id}", Jason.encode!(data))
+      Core.Request.build(:get, conn, "/key/#{table}/#{id}", nil)
       |> Core.HTTP.request()
 
     {:reply, result, conn}
