@@ -1,7 +1,14 @@
-defmodule Unreal.Core.Req do
+defmodule Unreal.Core.Request do
   @enforce_keys [:url, :headers, :sql]
   defstruct [:url, :headers, :sql]
 
+  @type t :: %__MODULE__{
+          url: String.t(),
+          headers: list({String.t(), String.t()}),
+          sql: String.t()
+        }
+
+  @spec build(Unreal.Core.Conn.t(), binary) :: Unreal.Core.Request.t()
   def build(%Unreal.Core.Conn{
         namespace: namespace,
         database: database,
@@ -11,7 +18,7 @@ defmodule Unreal.Core.Req do
       }) do
     auth = :base64.encode(user <> ":" <> password)
 
-    %Unreal.Core.Req{
+    %__MODULE__{
       url: host <> "/sql",
       headers: [
         {"Accept", "application/json"},
