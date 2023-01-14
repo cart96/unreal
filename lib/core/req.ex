@@ -1,16 +1,20 @@
 defmodule Unreal.Core.Request do
-  @enforce_keys [:url, :headers, :command]
-  defstruct [:url, :headers, :command]
+  alias Unreal.Core
+
+  @enforce_keys [:method, :url, :headers, :command]
+  defstruct [:method, :url, :headers, :command]
 
   @type t :: %__MODULE__{
+          method: :get | :post | :put | :patch | :delete,
           url: String.t(),
           headers: list({String.t(), String.t()}),
-          command: String.t()
+          command: String.t() | nil
         }
 
-  @spec build(Unreal.Core.Conn.t(), binary, binary) :: Unreal.Core.Request.t()
+  @spec build(atom, Core.Conn.t(), binary, binary | nil) :: Unreal.Core.Request.t()
   def build(
-        %Unreal.Core.Conn{
+        method,
+        %Core.Conn{
           namespace: namespace,
           database: database,
           user: user,
@@ -22,6 +26,7 @@ defmodule Unreal.Core.Request do
     auth = :base64.encode(user <> ":" <> password)
 
     %__MODULE__{
+      method: method,
       url: host <> path,
       headers: [
         {"Accept", "application/json"},
@@ -33,7 +38,7 @@ defmodule Unreal.Core.Request do
     }
   end
 
-  def build(conn, path, command) do
-    %{build(conn, path) | command: command}
+  def build(method, conn, path, command) do
+    %{build(method, conn, path) | command: command}
   end
 end
