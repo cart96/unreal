@@ -26,25 +26,57 @@ defmodule Unreal.Core.WebSocket do
   end
 
   @spec request(Core.WebSocket.Request.t()) :: Core.Result.t()
-  def request(%Core.WebSocket.Request{ws: conn} = request) do
+  def request(%Core.WebSocket.Request{ws: conn, id: id} = request) do
+    init_async_listener(conn)
+
+    task = Task.async(__MODULE__, :async_request, [request])
+    :ets.insert(:unreal_async, {id, task.pid})
+
+    Task.await(task)
+  end
+
+  def async_request(%Core.WebSocket.Request{ws: conn} = request) do
     Socket.Web.send!(
       conn,
       {:text, request |> Map.from_struct() |> Map.delete(:ws) |> Jason.encode!()}
     )
 
-    case Socket.Web.recv!(conn) do
-      {:text, data} ->
-        data = Jason.decode!(data)
-        IO.puts(data |> inspect)
+    receive do
+      result -> result
+    end
+  end
 
-        if is_nil(data["error"]) do
-          Core.Result.build(data["result"])
-        else
-          {:error, data["error"]["message"]}
-        end
+  def init_async_listener(conn) do
+    if :ets.whereis(:unreal_async) === :undefined do
+      :ets.new(:unreal_async, [:set, :protected, :named_table])
+      spawn(__MODULE__, :async_listener, [conn])
+    end
+  end
+
+  def async_listener(conn) do
+    {id, result} =
+      case Socket.Web.recv!(conn) do
+        {:text, data} ->
+          data = Jason.decode!(data)
+
+          if is_nil(data["error"]) do
+            {data["id"], Core.Result.build(data["result"])}
+          else
+            {data["id"], {:error, data["error"]["message"]}}
+          end
+
+        _ ->
+          {nil, {:error, "websocket receive error"}}
+      end
+
+    case :ets.lookup(:unreal_async, id) do
+      [{_key, pid} | _other] ->
+        send(pid, result)
 
       _ ->
-        {:error, "websocket receive error"}
+        nil
     end
+
+    async_listener(conn)
   end
 end
