@@ -5,13 +5,25 @@ defmodule Unreal do
   @type connection :: GenServer.server()
   @type result :: Core.Result.t()
 
-  @spec start_link({:http | :ws, Core.Conn.t()}) :: :ignore | {:error, any} | {:ok, pid}
-  def start_link({:http, conn}) do
-    GenServer.start_link(Protocols.HTTP, conn)
+  @spec start_link([
+          {:config, Core.Config.t()}
+          | {:name, atom | {:global, any} | {:via, atom, any}}
+          | {:protocol, :http | :websocket},
+          ...
+        ]) :: :ignore | {:error, any} | {:ok, pid}
+  def start_link(protocol: :http, config: config, name: name) do
+    GenServer.start_link(Protocols.HTTP, config, name: name)
   end
 
-  def start_link({:ws, conn}) do
-    GenServer.start_link(Protocols.WebSocket, conn)
+  def start_link(protocol: :websocket, config: config, name: name) do
+    GenServer.start_link(Protocols.WebSocket, config, name: name)
+  end
+
+  def child_spec(opts) do
+    %{
+      id: __MODULE__,
+      start: {__MODULE__, :start_link, [opts]}
+    }
   end
 
   @spec signin(connection, String.t(), String.t(), String.t() | nil) :: result
@@ -70,7 +82,10 @@ defmodule Unreal do
 
   @spec insert(connection, String.t(), String.t(), any) :: result
   def insert(pid, table, id, data) do
-    GenServer.call(pid, {:insert_object, table, id, data})
+    case GenServer.call(pid, {:insert_object, table, id, data}) do
+      {:ok, result} -> {:ok, List.first(result)}
+      any -> any
+    end
   end
 
   @spec get(connection, String.t()) :: result
@@ -80,17 +95,26 @@ defmodule Unreal do
 
   @spec get(connection, String.t(), String.t()) :: result
   def get(pid, table, id) do
-    GenServer.call(pid, {:get_object, table, id})
+    case GenServer.call(pid, {:get_object, table, id}) do
+      {:ok, result} -> {:ok, List.first(result)}
+      any -> any
+    end
   end
 
   @spec update(connection, String.t(), String.t(), any) :: result
   def update(pid, table, id, data) do
-    GenServer.call(pid, {:update_object, table, id, data})
+    case GenServer.call(pid, {:update_object, table, id, data}) do
+      {:ok, result} -> {:ok, List.first(result)}
+      any -> any
+    end
   end
 
   @spec patch(connection, String.t(), String.t(), any) :: result
   def patch(pid, table, id, data) do
-    GenServer.call(pid, {:patch_object, table, id, data})
+    case GenServer.call(pid, {:patch_object, table, id, data}) do
+      {:ok, result} -> {:ok, List.first(result)}
+      any -> any
+    end
   end
 
   @spec delete(connection, String.t()) :: result

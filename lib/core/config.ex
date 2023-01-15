@@ -1,4 +1,4 @@
-defmodule Unreal.Core.Conn do
+defmodule Unreal.Core.Config do
   @enforce_keys [:host]
   defstruct [:namespace, :database, :username, :password, :host]
 

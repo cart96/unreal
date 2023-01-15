@@ -3,8 +3,24 @@ defmodule Unreal.Protocols.WebSocket do
   alias Unreal.Core
 
   @impl true
-  def init(%Core.Conn{host: host}) do
-    socket = Socket.connect!("#{host}/rpc")
+  def init(config) do
+    socket = Socket.connect!("#{config.host}/rpc")
+
+    auth_data = %{
+      id: "_auth",
+      method: "signin",
+      params: [%{user: config.username, pass: config.password}]
+    }
+
+    use_data = %{
+      id: "_use",
+      method: "use",
+      params: [config.namespace, config.database]
+    }
+
+    Socket.Web.send!(socket, {:text, Jason.encode!(auth_data)})
+    Socket.Web.send!(socket, {:text, Jason.encode!(use_data)})
+
     {:ok, socket}
   end
 

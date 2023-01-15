@@ -3,19 +3,20 @@ defmodule Unreal.Core.HTTP do
 
   defmodule Request do
     @enforce_keys [:method, :url, :headers]
-    defstruct [:method, :url, :headers, :command]
+    defstruct [:method, :url, :headers, :command, :params]
 
     @type t :: %__MODULE__{
             method: :get | :post | :put | :patch | :delete,
             url: String.t(),
             headers: list({String.t(), String.t()}),
-            command: String.t() | nil
+            command: String.t() | nil,
+            params: map
           }
 
-    @spec build(atom, Core.Conn.t(), binary, binary | nil) :: t()
+    @spec build(atom, Core.Config.t(), binary, binary | nil) :: t()
     def build(
           method,
-          %Core.Conn{
+          %Core.Config{
             namespace: namespace,
             database: database,
             username: user,
@@ -35,22 +36,35 @@ defmodule Unreal.Core.HTTP do
           {"DB", database},
           {"Authorization", "Basic #{auth}"}
         ],
-        command: nil
+        command: nil,
+        params: %{}
       }
     end
 
     def build(method, conn, path, command) do
       %{build(method, conn, path) | command: command}
     end
+
+    @spec add_params(t, map) :: t
+    def add_params(request, params) do
+      %{request | params: params}
+    end
   end
 
   @spec request(Core.HTTP.Request.t()) :: Core.Result.t()
-  def request(%Core.HTTP.Request{method: method, url: url, headers: headers, command: command}) do
+  def request(%Core.HTTP.Request{
+        method: method,
+        url: url,
+        headers: headers,
+        command: command,
+        params: params
+      }) do
     request = %HTTPoison.Request{
       method: method,
       url: url,
       headers: headers,
-      body: command || ""
+      body: command || "",
+      params: params || %{}
     }
 
     case HTTPoison.request(request) do
