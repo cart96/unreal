@@ -44,7 +44,7 @@ defmodule Unreal.Core.HTTP do
     end
   end
 
-  @spec request(Core.HTTP.Request.t()) :: list(Core.Result.t()) | Core.Error.t()
+  @spec request(Core.HTTP.Request.t()) :: Core.Result.t()
   def request(%Core.HTTP.Request{method: method, url: url, headers: headers, command: command}) do
     request = %HTTPoison.Request{
       method: method,
@@ -55,17 +55,25 @@ defmodule Unreal.Core.HTTP do
 
     case HTTPoison.request(request) do
       {:ok, %{status_code: status, body: body}} ->
-        if status === 200 do
-          Core.Result.build(body)
-        else
-          Core.Error.build(body)
+        case Jason.decode(body) do
+          {:ok, data} ->
+            if status === 200 do
+              data
+              |> Enum.map(fn %{"result" => result} -> Core.Result.build(result) end)
+              |> fetch_result
+            else
+              {:error, data["information"] || data["description"] || data["details"]}
+            end
+
+          {:error, _} ->
+            {:error, "http parse error"}
         end
 
       {:error, _} ->
-        %Core.Error{
-          code: 0,
-          message: "Connection error."
-        }
+        {:error, "http connection error"}
     end
   end
+
+  defp fetch_result([value]), do: value
+  defp fetch_result(value), do: value
 end

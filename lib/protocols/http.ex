@@ -8,8 +8,28 @@ defmodule Unreal.Protocols.HTTP do
   end
 
   @impl true
-  def handle_cast({:use, namespace, database}, conn) do
-    {:noreply, %{conn | namespace: namespace, database: database}}
+  def handle_call({:signin, username, password}, _from, conn) do
+    {:reply, {:ok, nil}, %{conn | username: username, password: password}}
+  end
+
+  @impl true
+  def handle_call({:signup, _data}, _from, socket) do
+    {:reply, {:ok, nil}, socket}
+  end
+
+  @impl true
+  def handle_call({:use, namespace, database}, _from, conn) do
+    {:reply, {:ok, nil}, %{conn | namespace: namespace, database: database}}
+  end
+
+  @impl true
+  def handle_call(:ping, _from, socket) do
+    {:reply, {:ok, nil}, socket}
+  end
+
+  @impl true
+  def handle_call(:info, _from, socket) do
+    {:reply, {:ok, nil}, socket}
   end
 
   @impl true

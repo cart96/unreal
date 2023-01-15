@@ -25,7 +25,7 @@ defmodule Unreal.Core.WebSocket do
     end
   end
 
-  @spec request(Core.WebSocket.Request.t()) :: list(Core.Result.t()) | Core.Error.t()
+  @spec request(Core.WebSocket.Request.t()) :: Core.Result.t()
   def request(%Core.WebSocket.Request{ws: conn} = request) do
     Socket.Web.send!(
       conn,
@@ -35,21 +35,16 @@ defmodule Unreal.Core.WebSocket do
     case Socket.Web.recv!(conn) do
       {:text, data} ->
         data = Jason.decode!(data)
+        IO.puts(data |> inspect)
 
         if is_nil(data["error"]) do
           Core.Result.build(data["result"])
         else
-          %Core.Error{
-            code: data["error"]["code"] || 0,
-            message: data["error"]["message"] || ""
-          }
+          {:error, data["error"]["message"]}
         end
 
       _ ->
-        %Core.Error{
-          code: 1,
-          message: "Connection error."
-        }
+        {:error, "websocket receive error"}
     end
   end
 end
