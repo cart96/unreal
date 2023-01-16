@@ -131,4 +131,9 @@ defmodule Unreal do
   def invalidate(pid) do
     GenServer.call(pid, :invalidate)
   end
+
+  @spec let(connection, String.t(), any) :: result
+  def let(pid, key, value) do
+    GenServer.call(pid, {:let, key, value})
+  end
 end

@@ -158,4 +158,13 @@ defmodule Unreal.Protocols.WebSocket do
 
     {:reply, result, socket}
   end
+
+  @impl true
+  def handle_call({:let, key, value}, _from, socket) do
+    result =
+      Core.WebSocket.Request.build(socket, "let", [key, Jason.encode!(value)])
+      |> Core.WebSocket.request()
+
+    {:reply, result, socket}
+  end
 end
