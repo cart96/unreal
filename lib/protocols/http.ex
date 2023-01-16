@@ -122,4 +122,9 @@ defmodule Unreal.Protocols.HTTP do
 
     {:reply, result, config}
   end
+
+  @impl true
+  def handle_call(:invalidate, _from, config) do
+    {:reply, {:ok, nil}, %{config | username: nil, password: nil}}
+  end
 end

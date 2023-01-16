@@ -149,4 +149,13 @@ defmodule Unreal.Protocols.WebSocket do
 
     {:reply, result, socket}
   end
+
+  @impl true
+  def handle_call(:invalidate, _from, socket) do
+    result =
+      Core.WebSocket.Request.build(socket, "invalidate", [])
+      |> Core.WebSocket.request()
+
+    {:reply, result, socket}
+  end
 end

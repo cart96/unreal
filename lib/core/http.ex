@@ -19,13 +19,13 @@ defmodule Unreal.Core.HTTP do
           %Core.Config{
             namespace: namespace,
             database: database,
-            username: user,
+            username: username,
             password: password,
             host: host
           },
           path
         ) do
-      auth = :base64.encode(user <> ":" <> password)
+      auth = :base64.encode("#{username}:#{password}")
 
       %__MODULE__{
         method: method,
@@ -41,8 +41,8 @@ defmodule Unreal.Core.HTTP do
       }
     end
 
-    def build(method, conn, path, command) do
-      %{build(method, conn, path) | command: command}
+    def build(method, config, path, command) do
+      %{build(method, config, path) | command: command}
     end
 
     @spec add_params(t, map) :: t

@@ -126,4 +126,9 @@ defmodule Unreal do
   def delete(pid, table, id) do
     GenServer.call(pid, {:delete_object, table, id})
   end
+
+  @spec invalidate(connection) :: result
+  def invalidate(pid) do
+    GenServer.call(pid, :invalidate)
+  end
 end
