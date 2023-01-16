@@ -57,7 +57,6 @@ defmodule Unreal.Core.WebSocket do
     {id, result} =
       case Socket.Web.recv!(conn) do
         {:text, data} ->
-          IO.puts(data)
           data = Jason.decode!(data)
 
           if is_nil(data["error"]) do

@@ -23,8 +23,6 @@ defmodule Unreal.Core.Result do
   end
 
   def build(raw) when is_binary(raw) do
-    raw |> inspect |> IO.puts()
-
     case Jason.decode(raw) do
       {:ok, value} ->
         build(value)

@@ -5,12 +5,8 @@ defmodule Unreal do
   @type connection :: GenServer.server()
   @type result :: Core.Result.t()
 
-  @spec start_link([
-          {:config, Core.Config.t()}
-          | {:name, atom | {:global, any} | {:via, atom, any}}
-          | {:protocol, :http | :websocket},
-          ...
-        ]) :: :ignore | {:error, any} | {:ok, pid}
+  @spec start_link(protocol: :http | :websocket, config: Unreal.Core.Config.t(), name: :atom) ::
+          :ignore | {:error, any} | {:ok, pid}
   def start_link(protocol: :http, config: config, name: name) do
     GenServer.start_link(Protocols.HTTP, config, name: name)
   end
@@ -19,6 +15,7 @@ defmodule Unreal do
     GenServer.start_link(Protocols.WebSocket, config, name: name)
   end
 
+  @spec child_spec(any) :: %{id: Unreal, start: {Unreal, :start_link, [...]}}
   def child_spec(opts) do
     %{
       id: __MODULE__,
