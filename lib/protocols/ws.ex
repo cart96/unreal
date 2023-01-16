@@ -19,7 +19,10 @@ defmodule Unreal.Protocols.WebSocket do
     }
 
     Socket.Web.send!(socket, {:text, Jason.encode!(auth_data)})
+    Socket.Web.recv!(socket)
+
     Socket.Web.send!(socket, {:text, Jason.encode!(use_data)})
+    Socket.Web.recv!(socket)
 
     {:ok, socket}
   end
