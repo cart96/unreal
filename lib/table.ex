@@ -2,17 +2,7 @@ defmodule Unreal.Table do
   defmacro __using__(name: name, table: table) do
     quote bind_quoted: [name: name, table: table] do
       def insert(id, data) do
-        if Keyword.has_key?(__MODULE__.__info__(:functions), :changeset) do
-          changeset = apply(__MODULE__, :changeset, [%__MODULE__{}, data])
-
-          if changeset.valid? do
-            Unreal.insert(unquote(name), unquote(table), id, data)
-          else
-            {:error, {:ecto, changeset}}
-          end
-        else
-          Unreal.insert(unquote(name), unquote(table), id, data)
-        end
+        Unreal.insert(unquote(name), unquote(table), id, data)
       end
 
       def get(id) do
@@ -24,17 +14,7 @@ defmodule Unreal.Table do
       end
 
       def update(id, data) do
-        if Keyword.has_key?(__MODULE__.__info__(:functions), :changeset) do
-          changeset = apply(__MODULE__, :changeset, [%__MODULE__{}, data])
-
-          if changeset.valid? do
-            Unreal.update(unquote(name), unquote(table), id, data)
-          else
-            {:error, {:ecto, changeset}}
-          end
-        else
-          Unreal.update(unquote(name), unquote(table), id, data)
-        end
+        Unreal.update(unquote(name), unquote(table), id, data)
       end
 
       def delete(id) do
