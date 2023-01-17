@@ -100,6 +100,33 @@ defmodule Unreal.Protocols.WebSocket do
   end
 
   @impl true
+  def handle_call({:update_table, table, data}, _from, socket) do
+    result =
+      Core.WebSocket.Request.build(socket, "update", [table, data])
+      |> Core.WebSocket.request()
+
+    {:reply, result, socket}
+  end
+
+  @impl true
+  def handle_call({:change_table, table, data}, _from, socket) do
+    result =
+      Core.WebSocket.Request.build(socket, "change", [table, data])
+      |> Core.WebSocket.request()
+
+    {:reply, result, socket}
+  end
+
+  @impl true
+  def handle_call({:modify_table, table, data}, _from, socket) do
+    result =
+      Core.WebSocket.Request.build(socket, "modify", [table, data])
+      |> Core.WebSocket.request()
+
+    {:reply, result, socket}
+  end
+
+  @impl true
   def handle_call({:delete_table, table}, _from, socket) do
     result =
       Core.WebSocket.Request.build(socket, "delete", [table])
@@ -136,9 +163,18 @@ defmodule Unreal.Protocols.WebSocket do
   end
 
   @impl true
-  def handle_call({:patch_object, table, id, data}, _from, socket) do
+  def handle_call({:change_object, table, id, data}, _from, socket) do
     result =
       Core.WebSocket.Request.build(socket, "change", ["#{table}:#{id}", data])
+      |> Core.WebSocket.request()
+
+    {:reply, result, socket}
+  end
+
+  @impl true
+  def handle_call({:modify_object, table, id, data}, _from, socket) do
+    result =
+      Core.WebSocket.Request.build(socket, "modify", ["#{table}:#{id}", data])
       |> Core.WebSocket.request()
 
     {:reply, result, socket}

@@ -9,12 +9,16 @@ defmodule Unreal.Table do
         Unreal.get(unquote(name), unquote(table), id)
       end
 
-      def patch(id, data) do
-        Unreal.patch(unquote(name), unquote(table), id, data)
-      end
-
       def update(id, data) do
         Unreal.update(unquote(name), unquote(table), id, data)
+      end
+
+      def change(id, data) do
+        Unreal.change(unquote(name), unquote(table), id, data)
+      end
+
+      def modify(id, data) do
+        Unreal.modify(unquote(name), unquote(table), id, data)
       end
 
       def delete(id) do

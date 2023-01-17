@@ -98,6 +98,11 @@ defmodule Unreal do
     end
   end
 
+  @spec update(connection, String.t(), any) :: result
+  def update(pid, table, data) do
+    GenServer.call(pid, {:update_table, table, data})
+  end
+
   @spec update(connection, String.t(), String.t(), any) :: result
   def update(pid, table, id, data) do
     case GenServer.call(pid, {:update_object, table, id, data}) do
@@ -106,9 +111,27 @@ defmodule Unreal do
     end
   end
 
-  @spec patch(connection, String.t(), String.t(), any) :: result
-  def patch(pid, table, id, data) do
-    case GenServer.call(pid, {:patch_object, table, id, data}) do
+  @spec change(connection, String.t(), any) :: result
+  def change(pid, table, data) do
+    GenServer.call(pid, {:change_table, table, data})
+  end
+
+  @spec change(connection, String.t(), String.t(), any) :: result
+  def change(pid, table, id, data) do
+    case GenServer.call(pid, {:change_object, table, id, data}) do
+      {:ok, result} -> {:ok, List.first(result)}
+      any -> any
+    end
+  end
+
+  @spec modify(connection, String.t(), any) :: result
+  def modify(pid, table, data) do
+    GenServer.call(pid, {:modify_table, table, data})
+  end
+
+  @spec modify(connection, String.t(), String.t(), any) :: result
+  def modify(pid, table, id, data) do
+    case GenServer.call(pid, {:modify_object, table, id, data}) do
       {:ok, result} -> {:ok, List.first(result)}
       any -> any
     end

@@ -24,11 +24,15 @@ defmodule Unreal.Protocols.HTTP do
 
   @impl true
   def handle_call(:ping, _from, socket) do
+    # Not Implemented for HTTP
+
     {:reply, {:ok, nil}, socket}
   end
 
   @impl true
   def handle_call(:info, _from, socket) do
+    # Not Implemented for HTTP
+
     {:reply, {:ok, nil}, socket}
   end
 
@@ -70,6 +74,31 @@ defmodule Unreal.Protocols.HTTP do
   end
 
   @impl true
+  def handle_call({:update_table, table, data}, _from, config) do
+    result =
+      Core.HTTP.Request.build(:put, config, "/key/#{table}", data)
+      |> Core.HTTP.request()
+
+    {:reply, result, config}
+  end
+
+  @impl true
+  def handle_call({:change_table, table, data}, _from, config) do
+    result =
+      Core.HTTP.Request.build(:patch, config, "/key/#{table}", data)
+      |> Core.HTTP.request()
+
+    {:reply, result, config}
+  end
+
+  @impl true
+  def handle_call({:modify_table, _table, _data}, _from, config) do
+    # Not Implemented for HTTP
+
+    {:reply, config, config}
+  end
+
+  @impl true
   def handle_call({:delete_table, table}, _from, config) do
     result =
       Core.HTTP.Request.build(:delete, config, "/key/#{table}", nil)
@@ -106,12 +135,19 @@ defmodule Unreal.Protocols.HTTP do
   end
 
   @impl true
-  def handle_call({:patch_object, table, id, data}, _from, config) do
+  def handle_call({:change_object, table, id, data}, _from, config) do
     result =
       Core.HTTP.Request.build(:patch, config, "/key/#{table}/#{id}", Jason.encode!(data))
       |> Core.HTTP.request()
 
     {:reply, result, config}
+  end
+
+  @impl true
+  def handle_call({:modify_object, _table, _id, _data}, _from, config) do
+    # Not Implemented for HTTP
+
+    {:reply, config, config}
   end
 
   @impl true
@@ -130,6 +166,8 @@ defmodule Unreal.Protocols.HTTP do
 
   @impl true
   def handle_call(:let, _from, config) do
+    # Not Implemented for HTTP
+
     {:reply, {:ok, nil}, config}
   end
 end
