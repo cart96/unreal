@@ -1,28 +1,52 @@
 defmodule Unreal.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+  @source_url "https://github.com/cart96/unreal"
+
   def project do
     [
       app: :unreal,
-      version: "0.1.0",
-      elixir: "~> 1.14",
+      version: @version,
+      elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      description: description(),
+      package: package(),
+      deps: deps(),
+
+      # documentation
+      name: "Unreal",
+      source_url: @source_url,
+      docs: [
+        main: "readme",
+        extras: ["README.md"]
+      ]
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     []
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:httpoison, "~> 1.8"},
       {:jason, ">= 1.0.0"},
       {:socket, "~> 0.3"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false}
+    ]
+  end
+
+  defp description() do
+    "Unofficial SurrealDB client for Elixir"
+  end
+
+  defp package() do
+    [
+      name: "unreal",
+      licenses: ["MIT License"],
+      links: %{"GitHub" => @source_url},
+      maintainers: ["icecat696 (cart96)"]
     ]
   end
 end
