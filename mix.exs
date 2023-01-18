@@ -21,7 +21,8 @@ defmodule Unreal.MixProject do
     [
       {:httpoison, "~> 1.8"},
       {:jason, ">= 1.0.0"},
-      {:socket, "~> 0.3"}
+      {:socket, "~> 0.3"},
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false}
     ]
   end
 end

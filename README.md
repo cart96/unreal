@@ -27,8 +27,10 @@ config = %Unreal.Core.Config{
   namespace: "test"
 }
 
-Unreal.start_link(protocol: :websocket, config: config, name: :database)
-Unreal.insert(:database, "users", "bob", %{age: 18, active: true})
+{:ok, pid} = Unreal.start_link(protocol: :websocket, config: config, name: :database)
+
+Unreal.insert(pid, "users", "bob", %{age: 18, active: true})
+Unreal.get(:database, "users")
 ```
 
 ### With Supervisor
