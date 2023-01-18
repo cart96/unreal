@@ -209,7 +209,7 @@ defmodule Unreal do
   Applies JSON Patch changes to all records. Only works for WebSocket connection.
 
       Unreal.modify(pid, "users", [
-        { op: "replace", path: "/created_at", value: new Date() },
+        { op: "replace", path: "/created_at", value: 123 },
       ])
   """
   @spec modify(connection, String.t(), any) :: result
@@ -221,7 +221,7 @@ defmodule Unreal do
   Modifies a specific record. Only works for WebSocket connection.
 
       Unreal.modify(pid, "users", "bob", [
-        { op: "replace", path: "/created_at", value: new Date() },
+        { op: "replace", path: "/created_at", value: 123 },
       ])
   """
   @spec modify(connection, String.t(), String.t(), any) :: result

@@ -2,6 +2,8 @@
 
 Unofficial SurrealDB client for Elixir. Supports both WebSocket and HTTP connection.
 
+**NOTE**: Currently, Unreal is complete library for simple projects. But I am trying to improve it for large projects.
+
 ## Installation
 
 Add `unreal` to your list of dependencies in `mix.exs`:
