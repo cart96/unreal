@@ -8,13 +8,13 @@ defmodule Unreal.Protocols.HTTP do
   end
 
   @impl true
-  def handle_call({:signin, username, password}, _from, config) do
+  def handle_call({:signin, %{user: username, pass: password}}, _from, config) do
     {:reply, {:ok, nil}, %{config | username: username, password: password}}
   end
 
   @impl true
-  def handle_call({:signup, _data}, _from, socket) do
-    {:reply, {:ok, nil}, socket}
+  def handle_call({:signup, _data}, _from, config) do
+    {:reply, {:ok, nil}, config}
   end
 
   @impl true
