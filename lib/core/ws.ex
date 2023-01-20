@@ -47,7 +47,7 @@ defmodule Unreal.Core.WebSocket do
   end
 
   def init_async_listener(conn) do
-    if :ets.whereis(:unreal_async) === :undefined do
+    if :ets.whereis(:unreal_async) == :undefined do
       :ets.new(:unreal_async, [:set, :protected, :named_table])
       spawn(__MODULE__, :async_listener, [conn])
     end

@@ -28,7 +28,7 @@ defmodule Unreal.Core.Result do
         build(value)
 
       {:error, _} ->
-        if raw === "" do
+        if raw == "" do
           {:ok, nil}
         else
           {:error, "parsing error"}
