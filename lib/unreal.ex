@@ -3,20 +3,20 @@ defmodule Unreal do
   Main part of the driver. A wrapper for HTTP and WebSocket protocols.
   """
 
-  alias Unreal.Protocols
+  alias Unreal.Protocol
   alias Unreal.Core
 
   @type connection :: GenServer.server()
   @type result :: Core.Result.t()
 
-  @spec start_link(protocol: :http | :websocket, config: Unreal.Core.Config.t(), name: :atom) ::
+  @spec start_link(protocol: :http | :websocket, config: Core.Config.t(), name: :atom) ::
           :ignore | {:error, any} | {:ok, pid}
   def start_link(protocol: :http, config: config, name: name) do
-    GenServer.start_link(Protocols.HTTP, config, name: name)
+    GenServer.start_link(Protocol.HTTP, config, name: name)
   end
 
   def start_link(protocol: :websocket, config: config, name: name) do
-    GenServer.start_link(Protocols.WebSocket, config, name: name)
+    GenServer.start_link(Protocol.WebSocket, config, name: name)
   end
 
   @spec child_spec(any) :: %{id: Unreal, start: {Unreal, :start_link, [...]}}

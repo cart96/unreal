@@ -1,4 +1,4 @@
-defmodule Unreal.Protocols.WebSocket do
+defmodule Unreal.Protocol.WebSocket do
   use GenServer
   alias Unreal.Core
 

@@ -1,4 +1,4 @@
-defmodule Unreal.Protocols.HTTP do
+defmodule Unreal.Protocol.HTTP do
   use GenServer
   alias Unreal.Core
 
@@ -34,15 +34,6 @@ defmodule Unreal.Protocols.HTTP do
     # Not Implemented for HTTP
 
     {:reply, {:ok, nil}, socket}
-  end
-
-  @impl true
-  def handle_call({:query, command}, _from, config) do
-    result =
-      Core.HTTP.Request.build(:post, config, "/sql", command)
-      |> Core.HTTP.request()
-
-    {:reply, result, config}
   end
 
   @impl true

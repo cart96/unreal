@@ -82,6 +82,22 @@ Unreal.query(:database, "SELECT * FROM users WHERE age > $age", %{
 })
 ```
 
+### Query Builders
+
+This feature is inspired from [Cirql](https://github.com/StarlaneStudios/cirql) and currently not finished.
+
+```elixir
+alias Unreal.Writer
+
+{query, params} =
+  Writer.Select.init()
+  |> Writer.Select.from("users")
+  |> Writer.Select.get([:id, :username, :age])
+  |> Writer.Select.where(age: {:>, 18}, verified: true)
+
+{:ok, result} = Unreal.query(:database, query, params)
+```
+
 ## Documentation
 
 Documentation is avaible at [HexDocs](https://hexdocs.pm/unreal).
