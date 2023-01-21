@@ -2,20 +2,20 @@ defmodule Unreal.Writer.Select do
   @moduledoc """
   Query builder for select operation.
 
-    alias Unreal.Writer
+      alias Unreal.Writer
 
-    Writer.Select.init()
-    |> Writer.Select.from("users")
-    |> Writer.Select.where(age: {:>, 18})
-    |> Writer.Select.get([:username, :age])
-    |> Writer.Select.build()
+      Writer.Select.init()
+      |> Writer.Select.from("users")
+      |> Writer.Select.where(age: {:>, 18})
+      |> Writer.Select.get([:username, :age])
+      |> Writer.Select.build()
 
   Or
 
-    alias Unreal.Writer
+      alias Unreal.Writer
 
-    Writer.Select.init("users", [:username, :age], age: {:>, 18})
-    |> Writer.Select.build()
+      Writer.Select.init("users", [:username, :age], age: {:>, 18})
+      |> Writer.Select.build()
   """
 
   defstruct [:values, :from, :where, :params]

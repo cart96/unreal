@@ -2,19 +2,19 @@ defmodule Unreal.Writer.Create do
   @moduledoc """
   Query builder for create operation.
 
-    alias Unreal.Writer
+      alias Unreal.Writer
 
-    Writer.Create.init()
-    |> Writer.Create.name("users:bob")
-    |> Writer.Create.values(age: 18, verified: true)
-    |> Writer.Create.build()
+      Writer.Create.init()
+      |> Writer.Create.name("users:bob")
+      |> Writer.Create.values(age: 18, verified: true)
+      |> Writer.Create.build()
 
   Or
 
-    alias Unreal.Writer
+      alias Unreal.Writer
 
-    Writer.Create.init("users:bob", age: 18, verified: true)
-    |> Writer.Create.build()
+      Writer.Create.init("users:bob", age: 18, verified: true)
+      |> Writer.Create.build()
   """
 
   defstruct [:name, :values]

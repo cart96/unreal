@@ -2,20 +2,20 @@ defmodule Unreal.Writer.Update do
   @moduledoc """
   Query builder for update operation.
 
-    alias Unreal.Writer
+      alias Unreal.Writer
 
-    Writer.Update.init()
-    |> Writer.Update.name("users")
-    |> Writer.Update.values(point: {:+, 10}, verified: true)
-    |> Writer.Update.where(point: {:>, 50})
-    |> Writer.Update.build()
+      Writer.Update.init()
+      |> Writer.Update.name("users")
+      |> Writer.Update.values(point: {:+, 10}, verified: true)
+      |> Writer.Update.where(point: {:>, 50})
+      |> Writer.Update.build()
 
   Or
 
-    alias Unreal.Writer
+      alias Unreal.Writer
 
-    Writer.Update.init("users", [point: {:+, 10}, verified: true], point: {:>, 50})
-    |> Writer.Update.build()
+      Writer.Update.init("users", [point: {:+, 10}, verified: true], point: {:>, 50})
+      |> Writer.Update.build()
   """
 
   defstruct [:name, :values, :where]

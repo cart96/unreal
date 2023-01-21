@@ -6,8 +6,6 @@ Unofficial SurrealDB client for Elixir. Supports both WebSocket and HTTP connect
 
 > ⚠️ Unreal is well tested. But still may contains some bugs. Please report an issue if you got an one. ⚠️
 
-</div>
-
 ## Installation
 
 Add `unreal` to your list of dependencies in `mix.exs`:

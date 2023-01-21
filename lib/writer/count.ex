@@ -2,19 +2,19 @@ defmodule Unreal.Writer.Count do
   @moduledoc """
   Query builder for count operation.
 
-    alias Unreal.Writer
+      alias Unreal.Writer
 
-    Writer.Count.init()
-    |> Writer.Count.from("users")
-    |> Writer.Count.where(age: {:>, 18})
-    |> Writer.Count.build()
+      Writer.Count.init()
+      |> Writer.Count.from("users")
+      |> Writer.Count.where(age: {:>, 18})
+      |> Writer.Count.build()
 
   Or
 
-    alias Unreal.Writer
+      alias Unreal.Writer
 
-    Writer.Count.init("users", age: {:>, 18})
-    |> Writer.Count.build()
+      Writer.Count.init("users", age: {:>, 18})
+      |> Writer.Count.build()
   """
 
   defstruct [:from, :where, :params]
