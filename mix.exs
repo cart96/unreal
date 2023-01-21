@@ -18,6 +18,7 @@ defmodule Unreal.MixProject do
       name: "Unreal",
       source_url: @source_url,
       docs: [
+        logo: "./assets/unreal.png",
         main: "readme",
         extras: ["README.md"]
       ]
@@ -32,8 +33,8 @@ defmodule Unreal.MixProject do
     [
       {:httpoison, "~> 1.8"},
       {:jason, "~> 1.4"},
-      {:socket, "~> 0.3"},
-      {:ex_doc, "~> 0.21", only: :dev, runtime: false}
+      {:socket, "~> 0.3.13"},
+      {:ex_doc, "~> 0.29.1", only: :dev, runtime: false}
     ]
   end
 

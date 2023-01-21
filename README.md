@@ -1,8 +1,12 @@
+![](./assets/unreal.png)
+
 # Unreal
 
 Unofficial SurrealDB client for Elixir. Supports both WebSocket and HTTP connection.
 
-**NOTE**: Currently, Unreal is complete library for simple projects. But I am trying to improve it for large projects.
+> ⚠️ Unreal is well tested. But still may contains some bugs. Please report an issue if you got an one. ⚠️
+
+</div>
 
 ## Installation
 

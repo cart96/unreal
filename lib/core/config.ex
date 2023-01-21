@@ -5,6 +5,7 @@ defmodule Unreal.Core.Config do
   ## Options
   - timeout: Allows you to set custom timeout, default is `5000`. If you want to remove timeout, put `:infinity` instead.
   """
+
   @enforce_keys [:host]
   defstruct [:namespace, :database, :username, :password, :host, :options]
 
