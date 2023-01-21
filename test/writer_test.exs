@@ -20,6 +20,8 @@ defmodule UnrealWriterTest do
 
     {:ok, result} = Unreal.query(:database_ws, query, params)
 
+    :logger.info(result |> inspect)
+
     assert result["count"] == 2
   end
 
