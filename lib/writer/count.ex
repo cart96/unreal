@@ -1,6 +1,6 @@
 defmodule Unreal.Writer.Count do
   @moduledoc """
-  Query builder for counting.
+  Query builder for count operation.
 
     alias Unreal.Writer
 
@@ -49,7 +49,8 @@ defmodule Unreal.Writer.Count do
 
   @spec where(t, keyword) :: t
   def where(builder, matches) do
-    Unreal.Writer.Shared.where(builder, matches)
+    {string, params} = Unreal.Writer.Shared.where(matches)
+    %{builder | where: string, params: params}
   end
 
   @spec build(t) :: {String.t(), map}

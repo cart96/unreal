@@ -94,6 +94,7 @@ alias Unreal.Writer
   |> Writer.Select.from("users")
   |> Writer.Select.get([:id, :username, :age])
   |> Writer.Select.where(age: {:>, 18}, verified: true)
+  |> Writer.Select.build()
 
 {:ok, result} = Unreal.query(:database, query, params)
 ```

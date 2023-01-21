@@ -1,6 +1,6 @@
 defmodule Unreal.Writer.Shared do
-  @spec where(map, keyword) :: map
-  def where(builder, matches) do
+  @spec where(keyword, String.t()) :: {String.t(), map}
+  def where(matches, join \\ " AND ") do
     {strings, params} =
       matches
       |> Enum.map(fn {key, rule} ->
@@ -11,15 +11,17 @@ defmodule Unreal.Writer.Shared do
           {:>=, value} -> {random_key, "#{key} >= $#{random_key}", value}
           {:<, value} -> {random_key, "#{key} < $#{random_key}", value}
           {:>, value} -> {random_key, "#{key} > $#{random_key}", value}
+          {:+, value} -> {random_key, "#{key} += $#{random_key}", value}
+          {:-, value} -> {random_key, "#{key} -= $#{random_key}", value}
           value -> {random_key, "#{key} = $#{random_key}", value}
         end
       end)
       |> Enum.reduce({[], %{}}, fn {key, string, value}, {strs, params} ->
-        {strs ++ [string], params |> Map.put(key, value)}
+        {[string | strs], params |> Map.put(key, value)}
       end)
 
-    strings = strings |> Enum.join(" AND ")
+    strings = strings |> Enum.join(join)
 
-    %{builder | where: strings, params: params}
+    {strings, params}
   end
 end

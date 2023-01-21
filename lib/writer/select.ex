@@ -1,6 +1,6 @@
 defmodule Unreal.Writer.Select do
   @moduledoc """
-  Query builder for selecting.
+  Query builder for select operation.
 
     alias Unreal.Writer
 
@@ -66,7 +66,8 @@ defmodule Unreal.Writer.Select do
 
   @spec where(t, keyword) :: t
   def where(builder, matches) do
-    Unreal.Writer.Shared.where(builder, matches)
+    {string, params} = Unreal.Writer.Shared.where(matches)
+    %{builder | where: string, params: params}
   end
 
   @spec build(t) :: {String.t(), map}

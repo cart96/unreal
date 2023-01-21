@@ -78,6 +78,19 @@ defmodule Unreal.Protocol.WebSocket do
       Core.WebSocket.Request.build(socket, "query", [command, vars])
       |> Core.WebSocket.request()
 
+    result =
+      case result do
+        {:ok, result} ->
+          {:ok,
+           result
+           |> Enum.map(fn value -> value["result"] end)
+           |> List.flatten()
+           |> fetch_result}
+
+        other ->
+          other
+      end
+
     {:reply, result, socket}
   end
 
@@ -206,4 +219,7 @@ defmodule Unreal.Protocol.WebSocket do
 
     {:reply, result, socket}
   end
+
+  defp fetch_result([value]), do: value
+  defp fetch_result(value), do: value
 end

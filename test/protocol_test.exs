@@ -1,4 +1,4 @@
-defmodule UnrealTest do
+defmodule UnrealProtocolTest do
   use ExUnit.Case
 
   setup_all do
