@@ -73,7 +73,13 @@ defmodule Unreal.Core.HTTP do
           {:ok, data} ->
             if status === 200 do
               data
-              |> Enum.map(fn %{"result" => result} -> Core.Result.build(result) end)
+              |> Enum.map(fn value ->
+                if(value["status"] == "OK",
+                  do: {:ok, value["result"]},
+                  else: {:error, value["detail"]}
+                )
+              end)
+              |> List.flatten()
               |> fetch_result
             else
               {:error, data["information"] || data["description"] || data["details"]}

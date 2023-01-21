@@ -81,11 +81,15 @@ defmodule Unreal.Protocol.WebSocket do
     result =
       case result do
         {:ok, result} ->
-          {:ok,
-           result
-           |> Enum.map(fn value -> value["result"] end)
-           |> List.flatten()
-           |> fetch_result}
+          result
+          |> Enum.map(fn value ->
+            if(value["status"] == "OK",
+              do: {:ok, value["result"]},
+              else: {:error, value["detail"]}
+            )
+          end)
+          |> List.flatten()
+          |> fetch_result
 
         other ->
           other
