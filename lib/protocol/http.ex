@@ -41,7 +41,7 @@ defmodule Unreal.Protocol.HTTP do
     result =
       Core.HTTP.Request.build(:post, config, "/sql", command)
       |> Core.HTTP.Request.add_params(vars)
-      |> Core.HTTP.request()
+      |> Core.HTTP.request(config.options)
 
     {:reply, result, config}
   end
@@ -50,7 +50,7 @@ defmodule Unreal.Protocol.HTTP do
   def handle_call({:insert_table, table, data}, _from, config) do
     result =
       Core.HTTP.Request.build(:post, config, "/key/#{table}", Jason.encode!(data))
-      |> Core.HTTP.request()
+      |> Core.HTTP.request(config.options)
 
     {:reply, result, config}
   end
@@ -59,7 +59,7 @@ defmodule Unreal.Protocol.HTTP do
   def handle_call({:get_table, table}, _from, config) do
     result =
       Core.HTTP.Request.build(:get, config, "/key/#{table}", nil)
-      |> Core.HTTP.request()
+      |> Core.HTTP.request(config.options)
 
     {:reply, result, config}
   end
@@ -68,7 +68,7 @@ defmodule Unreal.Protocol.HTTP do
   def handle_call({:update_table, table, data}, _from, config) do
     result =
       Core.HTTP.Request.build(:put, config, "/key/#{table}", data)
-      |> Core.HTTP.request()
+      |> Core.HTTP.request(config.options)
 
     {:reply, result, config}
   end
@@ -77,7 +77,7 @@ defmodule Unreal.Protocol.HTTP do
   def handle_call({:change_table, table, data}, _from, config) do
     result =
       Core.HTTP.Request.build(:patch, config, "/key/#{table}", data)
-      |> Core.HTTP.request()
+      |> Core.HTTP.request(config.options)
 
     {:reply, result, config}
   end
@@ -93,7 +93,7 @@ defmodule Unreal.Protocol.HTTP do
   def handle_call({:delete_table, table}, _from, config) do
     result =
       Core.HTTP.Request.build(:delete, config, "/key/#{table}", nil)
-      |> Core.HTTP.request()
+      |> Core.HTTP.request(config.options)
 
     {:reply, result, config}
   end
@@ -102,7 +102,7 @@ defmodule Unreal.Protocol.HTTP do
   def handle_call({:insert_object, table, id, data}, _from, config) do
     result =
       Core.HTTP.Request.build(:post, config, "/key/#{table}/#{id}", Jason.encode!(data))
-      |> Core.HTTP.request()
+      |> Core.HTTP.request(config.options)
 
     {:reply, result, config}
   end
@@ -111,7 +111,7 @@ defmodule Unreal.Protocol.HTTP do
   def handle_call({:get_object, table, id}, _from, config) do
     result =
       Core.HTTP.Request.build(:get, config, "/key/#{table}/#{id}", nil)
-      |> Core.HTTP.request()
+      |> Core.HTTP.request(config.options)
 
     {:reply, result, config}
   end
@@ -120,7 +120,7 @@ defmodule Unreal.Protocol.HTTP do
   def handle_call({:update_object, table, id, data}, _from, config) do
     result =
       Core.HTTP.Request.build(:put, config, "/key/#{table}/#{id}", Jason.encode!(data))
-      |> Core.HTTP.request()
+      |> Core.HTTP.request(config.options)
 
     {:reply, result, config}
   end
@@ -129,7 +129,7 @@ defmodule Unreal.Protocol.HTTP do
   def handle_call({:change_object, table, id, data}, _from, config) do
     result =
       Core.HTTP.Request.build(:patch, config, "/key/#{table}/#{id}", Jason.encode!(data))
-      |> Core.HTTP.request()
+      |> Core.HTTP.request(config.options)
 
     {:reply, result, config}
   end
@@ -145,7 +145,7 @@ defmodule Unreal.Protocol.HTTP do
   def handle_call({:delete_object, table, id}, _from, config) do
     result =
       Core.HTTP.Request.build(:delete, config, "/key/#{table}/#{id}", nil)
-      |> Core.HTTP.request()
+      |> Core.HTTP.request(config.options)
 
     {:reply, result, config}
   end

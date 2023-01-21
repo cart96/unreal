@@ -25,8 +25,11 @@ defmodule Unreal.Core.WebSocket do
     end
   end
 
-  @spec request(Core.WebSocket.Request.t()) :: Core.Result.t()
-  def request(%Core.WebSocket.Request{ws: conn, id: id} = request) do
+  @spec request(Core.WebSocket.Request.t(), keyword) :: Core.Result.t()
+  def request(
+        %Core.WebSocket.Request{ws: conn, id: id} = request,
+        options
+      ) do
     init_async_listener(conn)
 
     task = Task.async(__MODULE__, :async_request, [request])
@@ -35,7 +38,13 @@ defmodule Unreal.Core.WebSocket do
     |> connection_to_id
     |> :ets.insert({id, task.pid})
 
-    Task.await(task)
+    case Task.yield(task, options[:timeout] || 5000) || Task.shutdown(task) do
+      {:ok, result} ->
+        result
+
+      _ ->
+        {:error, "WebSocket response timed out"}
+    end
   end
 
   def async_request(%Core.WebSocket.Request{ws: conn} = request) do

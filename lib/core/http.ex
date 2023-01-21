@@ -51,20 +51,24 @@ defmodule Unreal.Core.HTTP do
     end
   end
 
-  @spec request(Core.HTTP.Request.t()) :: Core.Result.t()
-  def request(%Core.HTTP.Request{
-        method: method,
-        url: url,
-        headers: headers,
-        command: command,
-        params: params
-      }) do
+  @spec request(Core.HTTP.Request.t(), keyword) :: Core.Result.t()
+  def request(
+        %Core.HTTP.Request{
+          method: method,
+          url: url,
+          headers: headers,
+          command: command,
+          params: params
+        },
+        options
+      ) do
     request = %HTTPoison.Request{
       method: method,
       url: url,
       headers: headers,
       body: command || "",
-      params: params || %{}
+      params: params || %{},
+      options: [recv_timeout: options[:timeout] || 5000]
     }
 
     case HTTPoison.request(request) do
@@ -90,7 +94,7 @@ defmodule Unreal.Core.HTTP do
         end
 
       {:error, _} ->
-        {:error, "http connection error"}
+        {:error, "HTTP Connection error"}
     end
   end
 

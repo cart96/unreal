@@ -3,7 +3,10 @@ config_http = %Unreal.Core.Config{
   namespace: "test",
   database: "test",
   username: "root",
-  password: "root"
+  password: "root",
+  options: [
+    timeout: 2500
+  ]
 }
 
 config_ws = %{config_http | host: "ws://127.0.0.1:8000"}

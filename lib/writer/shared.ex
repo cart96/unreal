@@ -1,4 +1,5 @@
 defmodule Unreal.Writer.Shared do
+  @doc false
   @spec where(keyword, String.t()) :: {String.t(), map}
   def where(matches, join \\ " AND ") do
     {strings, params} =
