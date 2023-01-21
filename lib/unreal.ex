@@ -3,20 +3,20 @@ defmodule Unreal do
   Main part of the driver. A wrapper for HTTP and WebSocket protocols.
   """
 
-  alias Unreal.Protocols
+  alias Unreal.Protocol
   alias Unreal.Core
 
   @type connection :: GenServer.server()
   @type result :: Core.Result.t()
 
-  @spec start_link(protocol: :http | :websocket, config: Unreal.Core.Config.t(), name: :atom) ::
+  @spec start_link(protocol: :http | :websocket, config: Core.Config.t(), name: :atom) ::
           :ignore | {:error, any} | {:ok, pid}
   def start_link(protocol: :http, config: config, name: name) do
-    GenServer.start_link(Protocols.HTTP, config, name: name)
+    GenServer.start_link(Protocol.HTTP, config, name: name)
   end
 
   def start_link(protocol: :websocket, config: config, name: name) do
-    GenServer.start_link(Protocols.WebSocket, config, name: name)
+    GenServer.start_link(Protocol.WebSocket, config, name: name)
   end
 
   @spec child_spec(any) :: %{id: Unreal, start: {Unreal, :start_link, [...]}}
@@ -29,35 +29,42 @@ defmodule Unreal do
 
   @doc """
   Signs in to a specific authentication scope.
-  You don't need to run in first initialization if you specified your username and password on config.
 
-      Unreal.signin(pid, "root", "root")
+      Unreal.signin(:database, %{
+        NS: "test",
+        DB: "test",
+        SC: "user",
+        email: "info@surrealdb.com",
+        pass: "123456",
+      })
+
+  Or
+
+      Unreal.signin(:database, "root", "root")
   """
-  @spec signin(connection, String.t(), String.t(), String.t() | nil) :: result
-  def signin(pid, username, password, scope \\ nil) do
-    data =
-      if is_nil(scope) do
-        %{user: username, pass: password}
-      else
-        %{user: username, pass: password, sc: scope}
-      end
-
+  @spec signin(connection, map) :: result
+  def signin(pid, data) do
     GenServer.call(pid, {:signin, data})
   end
 
-  @doc """
-  Signs this connection up to a specific authentication scope.
-  Currently not working.
-  """
-  @spec signup(connection, String.t(), String.t(), String.t() | nil) :: result
-  def signup(pid, username, password, scope \\ nil) do
-    data =
-      if is_nil(scope) do
-        %{user: username, pass: password}
-      else
-        %{user: username, pass: password, sc: scope}
-      end
+  @spec signin(connection, String.t(), String.t()) :: result
+  def signin(pid, username, password) do
+    GenServer.call(pid, {:signin, %{user: username, pass: password}})
+  end
 
+  @doc """
+  Signs this connection up to a specific authentication scope. Only works for WebSocket connection.
+
+      Unreal.signup(:database, %{
+        NS: "test",
+        DB: "test",
+        SC: "user",
+        email: "info@surrealdb.com",
+        pass: "123456",
+      })
+  """
+  @spec signup(connection, map) :: result
+  def signup(pid, data) do
     GenServer.call(pid, {:signup, data})
   end
 

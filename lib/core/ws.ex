@@ -25,21 +25,31 @@ defmodule Unreal.Core.WebSocket do
     end
   end
 
-  @spec request(Core.WebSocket.Request.t()) :: Core.Result.t()
-  def request(%Core.WebSocket.Request{ws: conn, id: id} = request) do
+  @spec request(Core.WebSocket.Request.t(), keyword) :: Core.Result.t()
+  def request(
+        %Core.WebSocket.Request{ws: conn, id: id} = request,
+        options
+      ) do
     init_async_listener(conn)
 
     task = Task.async(__MODULE__, :async_request, [request])
-    :ets.insert(:unreal_async, {id, task.pid})
 
-    Task.await(task)
+    conn
+    |> connection_to_id
+    |> :ets.insert({id, task.pid})
+
+    case Task.yield(task, options[:timeout] || 5000) || Task.shutdown(task) do
+      {:ok, result} ->
+        result
+
+      _ ->
+        {:error, "WebSocket response timed out"}
+    end
   end
 
   def async_request(%Core.WebSocket.Request{ws: conn} = request) do
-    Socket.Web.send!(
-      conn,
-      {:text, request |> Map.from_struct() |> Map.delete(:ws) |> Jason.encode!()}
-    )
+    data = request |> Map.from_struct() |> Map.delete(:ws) |> Jason.encode!()
+    Socket.Web.send!(conn, {:text, data})
 
     receive do
       result -> result
@@ -47,13 +57,17 @@ defmodule Unreal.Core.WebSocket do
   end
 
   def init_async_listener(conn) do
-    if :ets.whereis(:unreal_async) === :undefined do
-      :ets.new(:unreal_async, [:set, :protected, :named_table])
+    connection_id = connection_to_id(conn)
+
+    if :ets.whereis(connection_id) == :undefined do
+      :ets.new(connection_id, [:set, :protected, :named_table])
       spawn(__MODULE__, :async_listener, [conn])
     end
   end
 
   def async_listener(conn) do
+    connection_id = connection_to_id(conn)
+
     {id, result} =
       case Socket.Web.recv!(conn) do
         {:text, data} ->
@@ -69,7 +83,7 @@ defmodule Unreal.Core.WebSocket do
           {nil, {:error, "websocket receive error"}}
       end
 
-    case :ets.lookup(:unreal_async, id) do
+    case :ets.lookup(connection_id, id) do
       [{_key, pid} | _other] ->
         send(pid, result)
 
@@ -78,5 +92,10 @@ defmodule Unreal.Core.WebSocket do
     end
 
     async_listener(conn)
+  end
+
+  # Result is guaranteed to be less than 255 (max value length "134217727" is 9. with "unreal_", 9 + 7 = 16)
+  defp connection_to_id(conn) do
+    String.to_atom("unreal_" <> to_string(:erlang.phash2(conn)))
   end
 end

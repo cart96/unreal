@@ -1,0 +1,43 @@
+name: Tests
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: '1.14.0'
+        otp-version: '25.0'
+
+    - name: Restore dependencies cache
+      uses: actions/cache@v3
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-
+
+    - name: Install dependencies
+      run: mix deps.get
+      
+    - name: Set up SurrealDB
+      run: |
+        docker run -d -p 8000:8000 \
+        surrealdb/surrealdb:latest \
+        start --user root --pass root \
+        memory
+
+    - name: Run tests
+      run: mix test

@@ -1,8 +1,10 @@
+![](./assets/unreal.png)
+
 # Unreal
 
 Unofficial SurrealDB client for Elixir. Supports both WebSocket and HTTP connection.
 
-**NOTE**: Currently, Unreal is complete library for simple projects. But I am trying to improve it for large projects.
+> ⚠️ Unreal is well tested. But still may contains some bugs. Please report an issue if you got an one. ⚠️
 
 ## Installation
 
@@ -11,7 +13,7 @@ Add `unreal` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:unreal, "~> 0.1.0"}
+    {:unreal, "~> 0.2.0"}
   ]
 end
 ```
@@ -80,6 +82,23 @@ Unreal.query(:database, "SELECT * FROM users")
 Unreal.query(:database, "SELECT * FROM users WHERE age > $age", %{
   age: 30
 })
+```
+
+### Query Builders
+
+This feature is inspired from [Cirql](https://github.com/StarlaneStudios/cirql) and currently not finished.
+
+```elixir
+alias Unreal.Writer
+
+{query, params} =
+  Writer.Select.init()
+  |> Writer.Select.from("users")
+  |> Writer.Select.get([:id, :username, :age])
+  |> Writer.Select.where(age: {:>, 18}, verified: true)
+  |> Writer.Select.build()
+
+{:ok, result} = Unreal.query(:database, query, params)
 ```
 
 ## Documentation

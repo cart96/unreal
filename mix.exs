@@ -1,7 +1,7 @@
 defmodule Unreal.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.2.0"
   @source_url "https://github.com/cart96/unreal"
 
   def project do
@@ -18,6 +18,7 @@ defmodule Unreal.MixProject do
       name: "Unreal",
       source_url: @source_url,
       docs: [
+        logo: "./assets/unreal.png",
         main: "readme",
         extras: ["README.md"]
       ]
@@ -31,9 +32,9 @@ defmodule Unreal.MixProject do
   defp deps do
     [
       {:httpoison, "~> 1.8"},
-      {:jason, ">= 1.0.0"},
-      {:socket, "~> 0.3"},
-      {:ex_doc, "~> 0.21", only: :dev, runtime: false}
+      {:jason, "~> 1.4"},
+      {:socket, "~> 0.3.13"},
+      {:ex_doc, "~> 0.29.1", only: :dev, runtime: false}
     ]
   end
 
