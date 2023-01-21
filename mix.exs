@@ -1,7 +1,7 @@
 defmodule Unreal.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.2.0"
   @source_url "https://github.com/cart96/unreal"
 
   def project do
@@ -26,7 +26,7 @@ defmodule Unreal.MixProject do
   end
 
   def application do
-    [extra_applications: [:logger]]
+    []
   end
 
   defp deps do

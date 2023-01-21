@@ -15,7 +15,7 @@ Add `unreal` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:unreal, "~> 0.1.0"}
+    {:unreal, "~> 0.2.0"}
   ]
 end
 ```
