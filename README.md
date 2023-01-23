@@ -86,7 +86,7 @@ Unreal.query(:database, "SELECT * FROM users WHERE age > $age", %{
 
 ### Query Builders
 
-This feature is inspired from [Cirql](https://github.com/StarlaneStudios/cirql) and currently supports five (5) operations.
+This feature is inspired from [Cirql](https://github.com/StarlaneStudios/cirql) and currently not finished.
 
 ```elixir
 alias Unreal.Writer
@@ -100,25 +100,6 @@ alias Unreal.Writer
 
 {:ok, result} = Unreal.query(:database, query, params)
 ```
-
-### Ways to Use Order of Preference
-
-- Default functions like `insert`, `update`, `delete` etc., are simplest way to use.
-- For more flexible queries, use built-in query builders.
-- If query builders are not enough for you and you need to run something complex, use `query` function.
-
-  ```elixir
-  # NOTE: Query builders are flexible enough for this query.
-  #       This is just an example.
-
-  # Bad, allows users to inject SurrealQL commands.
-  Unreal.query(pid, "SELECT token FROM users WHERE password = #{password}")
-
-  # Good and safe.
-  Unreal.query(pid, "SELECT token FROM users WHERE password = $pass", %{pass: password})
-  ```
-
-  - Query parameters only supported in WebSocket connections for now.
 
 ## Documentation
 
