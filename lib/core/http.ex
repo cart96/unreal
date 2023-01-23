@@ -83,7 +83,7 @@ defmodule Unreal.Core.HTTP do
               data
               |> Enum.map(
                 &if(&1["status"] == "OK",
-                  do: {:ok, &1["result"] |> Core.Utils.get_first()},
+                  do: {:ok, &1["result"]},
                   else: {:error, &1["detail"]}
                 )
               )
