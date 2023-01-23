@@ -1,7 +1,11 @@
 defmodule Unreal.Core.WebSocket do
+  @moduledoc false
+
   alias Unreal.Core
 
   defmodule Request do
+    @moduledoc false
+
     @enforce_keys [:ws, :id, :method, :params]
     defstruct [:ws, :id, :method, :params]
 
