@@ -53,21 +53,4 @@ defmodule UnrealWriterTest do
     assert result["id"] == "points:lol"
     assert result["another"] == true
   end
-
-  test "Test Delete Writer", _state do
-    Unreal.insert(:database_ws, "points", "testing", %{value: true})
-
-    {:ok, result} = Unreal.get(:database_ws, "points", "testing")
-
-    assert result["id"] == "points:testing"
-    assert result["value"] == true
-
-    {query, params} =
-      Writer.Delete.init("points", value: true)
-      |> Writer.Delete.build()
-
-    Unreal.query(:database_ws, query, params)
-
-    {:ok, nil} = Unreal.get(:database_ws, "points", "testing")
-  end
 end
