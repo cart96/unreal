@@ -1,11 +1,7 @@
 defmodule Unreal.Core.HTTP do
-  @moduledoc false
-
   alias Unreal.Core
 
   defmodule Request do
-    @moduledoc false
-
     @enforce_keys [:method, :url, :headers]
     defstruct [:method, :url, :headers, :command, :params]
 
@@ -81,14 +77,14 @@ defmodule Unreal.Core.HTTP do
           {:ok, data} ->
             if status === 200 do
               data
-              |> Enum.map(
-                &if(&1["status"] == "OK",
-                  do: {:ok, &1["result"] |> Core.Utils.get_first()},
-                  else: {:error, &1["detail"]}
+              |> Enum.map(fn value ->
+                if(value["status"] == "OK",
+                  do: {:ok, value["result"]},
+                  else: {:error, value["detail"]}
                 )
-              )
+              end)
               |> List.flatten()
-              |> Core.Utils.get_first()
+              |> fetch_result
             else
               {:error, data["information"] || data["description"] || data["details"]}
             end
@@ -101,4 +97,7 @@ defmodule Unreal.Core.HTTP do
         {:error, "HTTP Connection error"}
     end
   end
+
+  defp fetch_result([value]), do: value
+  defp fetch_result(value), do: value
 end

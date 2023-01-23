@@ -1,8 +1,4 @@
 defmodule Unreal.Core.Result do
-  @moduledoc """
-  Action result.
-  """
-
   @type t :: {:ok, any} | {:error, String.t()} | list(t)
 
   @spec build(any) :: t

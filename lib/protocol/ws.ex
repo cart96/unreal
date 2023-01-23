@@ -1,6 +1,4 @@
 defmodule Unreal.Protocol.WebSocket do
-  @moduledoc false
-
   use GenServer
   alias Unreal.Core
 
@@ -86,11 +84,11 @@ defmodule Unreal.Protocol.WebSocket do
           result
           |> Enum.map(
             &if(&1["status"] == "OK",
-              do: {:ok, &1["result"] |> Core.Utils.get_first()},
+              do: {:ok, &1["result"] |> fetch_result},
               else: {:error, &1["detail"]}
             )
           )
-          |> Core.Utils.get_first()
+          |> fetch_result
 
         other ->
           other
@@ -224,4 +222,7 @@ defmodule Unreal.Protocol.WebSocket do
 
     {:reply, result, {socket, config}}
   end
+
+  defp fetch_result([value]), do: value
+  defp fetch_result(value), do: value
 end

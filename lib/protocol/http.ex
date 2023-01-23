@@ -1,6 +1,4 @@
 defmodule Unreal.Protocol.HTTP do
-  @moduledoc false
-
   use GenServer
   alias Unreal.Core
 
