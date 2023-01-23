@@ -1,5 +1,10 @@
 # Changelog
 
+# v0.2.1
+
+- Add query builder for delete operation.
+- Fix dialyzer errors.
+
 # v0.2.0
 
 - Fix message queue bug for multiple database client.
