@@ -138,8 +138,11 @@ defmodule Unreal do
   @spec insert(connection, String.t(), String.t(), any) :: result
   def insert(pid, table, id, data) do
     case GenServer.call(pid, {:insert_object, table, id, data}) do
-      {:ok, result} -> {:ok, List.first(result)}
-      any -> any
+      {:ok, result} ->
+        {:ok, List.first(result)}
+
+      any ->
+        any
     end
   end
 
@@ -161,8 +164,11 @@ defmodule Unreal do
   @spec get(connection, String.t(), String.t()) :: result
   def get(pid, table, id) do
     case GenServer.call(pid, {:get_object, table, id}) do
-      {:ok, result} -> {:ok, List.first(result)}
-      any -> any
+      {:ok, result} ->
+        {:ok, List.first(result)}
+
+      any ->
+        any
     end
   end
 
@@ -184,8 +190,11 @@ defmodule Unreal do
   @spec update(connection, String.t(), String.t(), any) :: result
   def update(pid, table, id, data) do
     case GenServer.call(pid, {:update_object, table, id, data}) do
-      {:ok, result} -> {:ok, List.first(result)}
-      any -> any
+      {:ok, result} ->
+        {:ok, List.first(result)}
+
+      any ->
+        any
     end
   end
 
@@ -207,8 +216,11 @@ defmodule Unreal do
   @spec change(connection, String.t(), String.t(), any) :: result
   def change(pid, table, id, data) do
     case GenServer.call(pid, {:change_object, table, id, data}) do
-      {:ok, result} -> {:ok, List.first(result)}
-      any -> any
+      {:ok, result} ->
+        {:ok, List.first(result)}
+
+      any ->
+        any
     end
   end
 
@@ -234,8 +246,11 @@ defmodule Unreal do
   @spec modify(connection, String.t(), String.t(), any) :: result
   def modify(pid, table, id, data) do
     case GenServer.call(pid, {:modify_object, table, id, data}) do
-      {:ok, result} -> {:ok, List.first(result)}
-      any -> any
+      {:ok, result} ->
+        {:ok, List.first(result)}
+
+      any ->
+        any
     end
   end
 
