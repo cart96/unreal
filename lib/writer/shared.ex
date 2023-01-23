@@ -6,7 +6,7 @@ defmodule Unreal.Writer.Shared do
     {strings, params} =
       matches
       |> Enum.map(fn {key, rule} ->
-        random_key = "k" <> (:crypto.strong_rand_bytes(4) |> Base.encode16())
+        random_key = Atom.to_string(key) <> (:crypto.strong_rand_bytes(4) |> Base.encode16())
 
         case rule do
           {:<=, value} -> {random_key, "#{key} <= $#{random_key}", value}
