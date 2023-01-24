@@ -1,5 +1,13 @@
 # Changelog
 
+# v0.2.2 _UPCOMING_
+
+- Fixes for nightly version.
+
+## Breaking Changes
+
+- Count query builder now returns `total` instead of `count`.
+
 # v0.2.1
 
 - Add query builder for delete operation.
