@@ -56,9 +56,9 @@ defmodule Unreal.Writer.Count do
   @spec build(t) :: {String.t(), map}
   def build(%__MODULE__{from: from, where: where, params: params}) do
     if where == "" do
-      {"SELECT count() FROM #{from} GROUP BY ALL;", params}
+      {"SELECT count() AS total FROM #{from} GROUP BY total;", params}
     else
-      {"SELECT count() FROM #{from} WHERE #{where} GROUP BY ALL;", params}
+      {"SELECT count() AS total FROM #{from} WHERE #{where} GROUP BY total;", params}
     end
   end
 end

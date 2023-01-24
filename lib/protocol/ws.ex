@@ -87,6 +87,13 @@ defmodule Unreal.Protocol.WebSocket do
 
     result =
       case result do
+        {:ok, %{"status" => status} = result} ->
+          if status == "OK" do
+            {:ok, result["result"] |> Core.Utils.get_first()}
+          else
+            {:error, result["detail"]}
+          end
+
         {:ok, result} ->
           result
           |> Enum.map(

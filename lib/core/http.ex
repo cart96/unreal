@@ -78,6 +78,13 @@ defmodule Unreal.Core.HTTP do
     case HTTPoison.request(request) do
       {:ok, %{status_code: status, body: body}} ->
         case Jason.decode(body) do
+          {:ok, %{"status" => status} = data} ->
+            if status == "OK" do
+              {:ok, data["result"] |> Core.Utils.get_first()}
+            else
+              {:error, data["detail"]}
+            end
+
           {:ok, data} ->
             if status === 200 do
               data

@@ -6,20 +6,28 @@ defmodule Unreal.Core.Result do
   @type t :: {:ok, any} | {:error, String.t()} | list(t)
 
   @spec build(any) :: t
-  def build([value]) when is_list(value) do
+  def build([value]) do
     {:ok, value}
+  end
+
+  def build([]) do
+    {:ok, nil}
+  end
+
+  def build("") do
+    {:ok, nil}
+  end
+
+  def build(true) do
+    {:ok, nil}
+  end
+
+  def build(false) do
+    {:error, "unknown error returned from response"}
   end
 
   def build(value) when is_map(value) or is_list(value) do
     {:ok, value}
-  end
-
-  def build(value) when is_boolean(value) do
-    if value do
-      {:ok, nil}
-    else
-      {:error, "unknown error returned from response"}
-    end
   end
 
   def build(raw) when is_binary(raw) do
@@ -28,11 +36,7 @@ defmodule Unreal.Core.Result do
         build(value)
 
       {:error, _} ->
-        if raw == "" do
-          {:ok, nil}
-        else
-          {:error, "parsing error"}
-        end
+        {:error, "parsing error"}
     end
   end
 

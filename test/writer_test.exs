@@ -20,7 +20,7 @@ defmodule UnrealWriterTest do
 
     {:ok, result} = Unreal.query(:database_ws, query, params)
 
-    assert result["count"] == 2
+    assert result["total"] == 2
   end
 
   test "Test Update Writer", _state do

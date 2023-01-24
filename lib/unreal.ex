@@ -139,7 +139,6 @@ defmodule Unreal do
   def insert(pid, table, id, data) do
     case GenServer.call(pid, {:insert_object, table, id, data}) do
       {:ok, result} ->
-        IO.inspect(result)
         {:ok, Core.Utils.get_first(result)}
 
       any ->
