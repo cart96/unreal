@@ -10,12 +10,8 @@ defmodule Unreal.Core.Result do
     {:ok, value}
   end
 
-  def build(value) when is_list(value) do
+  def build(value) when is_map(value) or is_list(value) do
     {:ok, value}
-  end
-
-  def build(value) when is_nil(value) do
-    {:ok, nil}
   end
 
   def build(value) when is_boolean(value) do
