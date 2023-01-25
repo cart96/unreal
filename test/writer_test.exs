@@ -15,17 +15,17 @@ defmodule UnrealWriterTest do
 
   test "Test Count Writer", _state do
     {query, params} =
-      Writer.Count.init("points", point: {:>, 50})
+      Writer.Count.init("points", point: {:gt, 50})
       |> Writer.Count.build()
 
     {:ok, result} = Unreal.query(:database_ws, query, params)
 
-    assert result["count"] == 2
+    assert result["total"] == 2
   end
 
   test "Test Update Writer", _state do
     {query, params} =
-      Writer.Update.init("points", [point: {:+, 20}], point: {:>, 50})
+      Writer.Update.init("points", [point: {:add, 20}], point: {:gt, 50})
       |> Writer.Update.build()
 
     {:ok, result} = Unreal.query(:database_ws, query, params)

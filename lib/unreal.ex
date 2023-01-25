@@ -139,7 +139,7 @@ defmodule Unreal do
   def insert(pid, table, id, data) do
     case GenServer.call(pid, {:insert_object, table, id, data}) do
       {:ok, result} ->
-        {:ok, List.first(result)}
+        {:ok, Core.Utils.get_first(result)}
 
       any ->
         any
@@ -165,7 +165,7 @@ defmodule Unreal do
   def get(pid, table, id) do
     case GenServer.call(pid, {:get_object, table, id}) do
       {:ok, result} ->
-        {:ok, List.first(result)}
+        {:ok, Core.Utils.get_first(result)}
 
       any ->
         any
@@ -191,7 +191,7 @@ defmodule Unreal do
   def update(pid, table, id, data) do
     case GenServer.call(pid, {:update_object, table, id, data}) do
       {:ok, result} ->
-        {:ok, List.first(result)}
+        {:ok, Core.Utils.get_first(result)}
 
       any ->
         any
@@ -217,7 +217,7 @@ defmodule Unreal do
   def change(pid, table, id, data) do
     case GenServer.call(pid, {:change_object, table, id, data}) do
       {:ok, result} ->
-        {:ok, List.first(result)}
+        {:ok, Core.Utils.get_first(result)}
 
       any ->
         any
@@ -247,7 +247,7 @@ defmodule Unreal do
   def modify(pid, table, id, data) do
     case GenServer.call(pid, {:modify_object, table, id, data}) do
       {:ok, result} ->
-        {:ok, List.first(result)}
+        {:ok, Core.Utils.get_first(result)}
 
       any ->
         any

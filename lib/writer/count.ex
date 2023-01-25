@@ -6,14 +6,14 @@ defmodule Unreal.Writer.Count do
 
       Writer.Count.init()
       |> Writer.Count.from("users")
-      |> Writer.Count.where(age: {:>, 18})
+      |> Writer.Count.where(age: {:gt, 18})
       |> Writer.Count.build()
 
   Or
 
       alias Unreal.Writer
 
-      Writer.Count.init("users", age: {:>, 18})
+      Writer.Count.init("users", age: {:gt, 18})
       |> Writer.Count.build()
   """
 
@@ -56,9 +56,9 @@ defmodule Unreal.Writer.Count do
   @spec build(t) :: {String.t(), map}
   def build(%__MODULE__{from: from, where: where, params: params}) do
     if where == "" do
-      {"SELECT count() FROM #{from} GROUP BY ALL;", params}
+      {"SELECT count() AS total FROM #{from} GROUP BY total;", params}
     else
-      {"SELECT count() FROM #{from} WHERE #{where} GROUP BY ALL;", params}
+      {"SELECT count() AS total FROM #{from} WHERE #{where} GROUP BY total;", params}
     end
   end
 end

@@ -84,22 +84,7 @@ defmodule Unreal.Protocol.WebSocket do
     result =
       Core.WebSocket.Request.build(socket, "query", [command, vars])
       |> Core.WebSocket.request(config.options)
-
-    result =
-      case result do
-        {:ok, result} ->
-          result
-          |> Enum.map(
-            &if(&1["status"] == "OK",
-              do: {:ok, &1["result"] |> Core.Utils.get_first()},
-              else: {:error, &1["detail"]}
-            )
-          )
-          |> Core.Utils.get_first()
-
-        other ->
-          other
-      end
+      |> handle_query_result
 
     {:reply, result, state}
   end
@@ -228,5 +213,23 @@ defmodule Unreal.Protocol.WebSocket do
       |> Core.WebSocket.request(config.options)
 
     {:reply, result, state}
+  end
+
+  defp handle_query_result({:ok, %{"status" => "OK", "result" => result}}) do
+    {:ok, Core.Utils.get_first(result)}
+  end
+
+  defp handle_query_result({:ok, %{"status" => "ERR", "detail" => detail}}) do
+    {:ok, detail}
+  end
+
+  defp handle_query_result({:ok, result}) when is_list(result) do
+    result
+    |> handle_query_result()
+    |> Core.Utils.get_first()
+  end
+
+  defp handle_query_result(other) do
+    other
   end
 end

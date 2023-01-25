@@ -6,15 +6,15 @@ defmodule Unreal.Writer.Update do
 
       Writer.Update.init()
       |> Writer.Update.name("users")
-      |> Writer.Update.values(point: {:+, 10}, verified: true)
-      |> Writer.Update.where(point: {:>, 50})
+      |> Writer.Update.values(point: {:add, 10}, verified: true)
+      |> Writer.Update.where(point: {:gt, 50})
       |> Writer.Update.build()
 
   Or
 
       alias Unreal.Writer
 
-      Writer.Update.init("users", [point: {:+, 10}, verified: true], point: {:>, 50})
+      Writer.Update.init("users", [point: {:add, 10}, verified: true], point: {:gt, 50})
       |> Writer.Update.build()
   """
 
