@@ -31,7 +31,7 @@ defmodule Unreal.MixProject do
 
   defp deps do
     [
-      {:httpoison, "~> 1.8"},
+      {:httpoison, "~> 2.0"},
       {:socket, "~> 0.3.13"},
       {:jason, "~> 1.4"},
       {:ex_doc, "~> 0.29.1", only: :dev, runtime: false}
