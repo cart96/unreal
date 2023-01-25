@@ -156,7 +156,6 @@ Documentation is avaible at [HexDocs](https://hexdocs.pm/unreal).
 
 ## Contributing
 
-- Please don't send any pull request to main branch.
 - Report bugs or request features [here](https://github.com/cart96/unreal/issues).
 - Always use `mix format` before sending a pull request.
 
