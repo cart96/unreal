@@ -46,7 +46,7 @@ defmodule Unreal.Core.WebSocket do
           result
 
         _ ->
-          {:error, "WebSocket response timed out"}
+          {:error, "websocket response timeout"}
       end
 
     :ets.delete(connection_id, id)
@@ -67,19 +67,17 @@ defmodule Unreal.Core.WebSocket do
       :ets.new(connection_id, [:set, :protected, :named_table])
       spawn(__MODULE__, :async_listener, [conn, connection_id])
     end
+
+    nil
   end
 
   def async_listener(conn, connection_id) do
     {id, result} =
       case Socket.Web.recv!(conn) do
         {:text, data} ->
-          data = Jason.decode!(data)
-
-          if is_nil(data["error"]) do
-            {data["id"], Core.Result.build(data["result"])}
-          else
-            {data["id"], {:error, data["error"]["message"]}}
-          end
+          data
+          |> Jason.decode()
+          |> handle_response_body()
 
         _ ->
           {nil, {:error, "websocket receive error"}}
@@ -94,6 +92,22 @@ defmodule Unreal.Core.WebSocket do
     end
 
     async_listener(conn, connection_id)
+  end
+
+  defp handle_response_body({:ok, %{"error" => %{"message" => message}, "id" => id}}) do
+    {id, {:error, message}}
+  end
+
+  defp handle_response_body({:ok, %{"result" => result, "id" => id}}) do
+    {id, Core.Result.build(result)}
+  end
+
+  defp handle_response_body({:ok, %{"id" => id}}) do
+    {id, {:error, "unexpected result while matching"}}
+  end
+
+  defp handle_response_body(_value) do
+    {nil, {:ok, nil}}
   end
 
   # Result is guaranteed to be less than 255 (max value length "134217727" is 9. with "unreal_", 9 + 7 = 16)

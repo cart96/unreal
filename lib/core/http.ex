@@ -66,7 +66,7 @@ defmodule Unreal.Core.HTTP do
         },
         options
       ) do
-    request = %HTTPoison.Request{
+    %HTTPoison.Request{
       method: method,
       url: url,
       headers: headers,
@@ -74,38 +74,39 @@ defmodule Unreal.Core.HTTP do
       params: params || %{},
       options: [recv_timeout: options[:timeout] || 5000]
     }
+    |> HTTPoison.request()
+    |> handle_response_result()
+  end
 
-    case HTTPoison.request(request) do
-      {:ok, %{status_code: status, body: body}} ->
-        case Jason.decode(body) do
-          {:ok, %{"status" => status} = data} ->
-            if status == "OK" do
-              {:ok, data["result"] |> Core.Utils.get_first()}
-            else
-              {:error, data["detail"]}
-            end
+  defp handle_response_result({:error, _}) do
+    {:error, "http connection error"}
+  end
 
-          {:ok, data} ->
-            if status === 200 do
-              data
-              |> Enum.map(
-                &if(&1["status"] == "OK",
-                  do: {:ok, &1["result"]},
-                  else: {:error, &1["detail"]}
-                )
-              )
-              |> List.flatten()
-              |> Core.Utils.get_first()
-            else
-              {:error, data["information"] || data["description"] || data["details"]}
-            end
+  defp handle_response_result({:ok, %{body: body}}) do
+    body
+    |> Jason.decode()
+    |> handle_response_body()
+  end
 
-          {:error, _} ->
-            {:error, "http parse error"}
-        end
+  defp handle_response_body({:error, _data}) do
+    {:error, "http body parse error"}
+  end
 
-      {:error, _} ->
-        {:error, "HTTP Connection error"}
-    end
+  defp handle_response_body({:ok, %{"status" => "OK", "result" => result}}) do
+    {:ok, Core.Utils.get_first(result)}
+  end
+
+  defp handle_response_body({:ok, %{"status" => "ERR", "details" => details}}) do
+    {:error, details}
+  end
+
+  defp handle_response_body({:ok, data}) when is_list(data) do
+    data
+    |> Enum.map(&handle_response_body({:ok, &1}))
+    |> Core.Utils.get_first()
+  end
+
+  defp handle_response_body({:ok, data}) do
+    {:error, data["information"] || data["description"] || data["details"]}
   end
 end
