@@ -95,10 +95,42 @@ alias Unreal.Writer
   Writer.Select.init()
   |> Writer.Select.from("users")
   |> Writer.Select.get([:id, :username, :age])
-  |> Writer.Select.where(age: {:>, 18}, verified: true)
+  |> Writer.Select.where(age: {:ge, 18}, verified: true)
   |> Writer.Select.build()
 
 {:ok, result} = Unreal.query(:database, query, params)
+```
+
+#### Operators
+
+There are some operators you can pass when you use query builders with `set` or `where` operations:
+
+- `:le`: Check whether a value is less than or equal to another value
+- `:ge`: Check whether a value is greater than or equal to another value
+- `:lt`: Check whether a value is less than another value
+- `:gt`: Check whether a value is greater than another value
+- `:add`: Add value to existing value (ONLY FOR UPDATING)
+- `:dec`: Substract value to existing value (ONLY FOR UPDATING)
+- `:ne`: Check whether two values are not equal
+- `:any`: Check whether any value in a set is equal to a value
+- `:all`: Check whether all values in a set are equal to a value
+- `:in`: Checks whether a value is contained within another value
+- `:ex`: Checks whether a value is not contained within another value
+
+```elixir
+# ...
+|> Writer.Select.where(age: {:gt, 13}, verified: true)
+# ...
+```
+
+As you can see, if we pass the value directly (like `verified: true`) it will generate it as equals operation.
+
+And if you want to pass a custom operator, you can change first value of the tuple to anything you want.
+
+```elixir
+# ...
+|> Writer.Select.where(thing: {"==", 26}) # Strict Equality
+# ...
 ```
 
 ### Ways to Use Order of Preference

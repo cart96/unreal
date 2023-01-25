@@ -1,12 +1,14 @@
 # Changelog
 
-# v0.2.2 _UPCOMING_
+# v0.2.2
 
+- Bump HTTPoison to v2.0.0
 - Fixes for nightly version.
 
 ## Breaking Changes
 
 - Count query builder now returns `total` instead of `count`.
+- Query builder operators changed. Check README
 
 # v0.2.1
 
