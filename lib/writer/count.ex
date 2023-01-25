@@ -6,14 +6,14 @@ defmodule Unreal.Writer.Count do
 
       Writer.Count.init()
       |> Writer.Count.from("users")
-      |> Writer.Count.where(age: {:>, 18})
+      |> Writer.Count.where(age: {:gt, 18})
       |> Writer.Count.build()
 
   Or
 
       alias Unreal.Writer
 
-      Writer.Count.init("users", age: {:>, 18})
+      Writer.Count.init("users", age: {:gt, 18})
       |> Writer.Count.build()
   """
 

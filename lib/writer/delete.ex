@@ -6,14 +6,14 @@ defmodule Unreal.Writer.Delete do
 
       Writer.Delete.init()
       |> Writer.Delete.from("users")
-      |> Writer.Delete.where(age: {:<, 13})
+      |> Writer.Delete.where(age: {:lt, 13})
       |> Writer.Delete.build()
 
   Or
 
       alias Unreal.Writer
 
-      Writer.Delete.init("users", age: {:<, 13})
+      Writer.Delete.init("users", age: {:lt, 13})
       |> Writer.Delete.build()
   """
 
